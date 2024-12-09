@@ -2,6 +2,7 @@
 LLVM_CONFIG = llvm-config
 CXX = $(shell $(LLVM_CONFIG) --cxx)
 CXXFLAGS = -std=c++17 -Wall -Wextra -g -gdwarf
+CXXPASSFLAGS = -fpass-plugin=$(PASS_PATH)/$(PASS_FILE)
 LDFLAGS = $(shell $(LLVM_CONFIG) --ldflags)
 
 # Instrumentation pass (overwrite if needed)
@@ -13,7 +14,6 @@ PASS_FILE = $(PASS_NAME).so
 # LLVM tools
 OPT = opt
 CLANG = clang++
-CLANG_WRAPPER = ./clang-wrapper.sh
 
 # Source and executable
 SRC = mealy.cpp
@@ -30,10 +30,7 @@ all-fast: $(EXEC_FAST)
 
 # Compile and instrument the source directly to an executable
 $(EXEC_FAST): $(SRC) build-pass
-	$(CLANG_WRAPPER) $(CXXFLAGS) $(SRC) -o $(EXEC_FAST)
-
-clean-fast:
-	rm -f $(EXEC_FAST)
+	$(CLANG) $(CXXFLAGS) $(CXXPASSFLAGS) $(SRC) -o $(EXEC_FAST)
 
 build-pass:
 	make -C $(PASS_PATH)
@@ -57,6 +54,6 @@ $(EXEC): build-pass instrument
 	$(CLANG) $(CXXFLAGS) instrumented.bc -o $(EXEC) $(LDFLAGS) 
 
 clean:
-	rm -f $(BC) instrumented.bc $(OBJ) $(EXEC)
+	rm -f $(BC) instrumented.bc $(OBJ) $(EXEC) $(EXEC_FAST)
 
 .PHONY: all clean instrument
