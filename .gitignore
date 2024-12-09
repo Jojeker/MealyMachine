@@ -1,5 +1,6 @@
 *.o
 mealy_machine
+mealy_machine_fast
 *.gz
 *.gcda
 *.gcno

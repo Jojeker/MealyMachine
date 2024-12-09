@@ -13,15 +13,27 @@ PASS_FILE = $(PASS_NAME).so
 # LLVM tools
 OPT = opt
 CLANG = clang++
+CLANG_WRAPPER = ./clang-wrapper.sh
 
 # Source and executable
 SRC = mealy.cpp
 BC = mealy.bc
 OBJ = mealy.o
 EXEC = mealy_machine
+EXEC_FAST = mealy_machine_fast
 
 # Targets
 all: $(EXEC)
+
+# Fast build with -Xclang for instrumentation
+all-fast: $(EXEC_FAST)
+
+# Compile and instrument the source directly to an executable
+$(EXEC_FAST): $(SRC) build-pass
+	$(CLANG_WRAPPER) $(CXXFLAGS) $(SRC) -o $(EXEC_FAST)
+
+clean-fast:
+	rm -f $(EXEC_FAST)
 
 build-pass:
 	make -C $(PASS_PATH)
