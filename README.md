@@ -22,12 +22,23 @@ An adapted version of the graph is provided below, where the states are labeled 
 
 ## Usage
 
+Dependencies:
+- LLVM (clang)
+- [LLVMGlobalInstrumentation](https://github.com/Jojeker/LLVMGlobalInstrumentation)
+
 To build the project, run the following commands:
 
 ```bash
-make
+# The implementation requires the LLVMGlobalInstrumentation (and the path `PASS_PATH` to it)
+make -DPASS_PATH=/path/to/LLVMGlobalInstrumentation
+
 # Run
 ./mealy_machine
+# Input a-h to see the output
+# To stop Ctrl+C
 ```
 
-The output is not only the result of the machine on the input word `abcdefg`, but memory state changes, that occur during the computation. This way the implementation can be tracked more easily.
+The output is not only the result of the machine, but also memory state changes, that occur during the computation. 
+This way the implementation can be tracked more easily.
+
+> Note: The implementation requires 
