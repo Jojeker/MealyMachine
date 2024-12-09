@@ -3,6 +3,7 @@ LLVM_CONFIG = llvm-config
 CXX = $(shell $(LLVM_CONFIG) --cxx)
 CXXFLAGS = -std=c++17 -Wall -Wextra -g -gdwarf
 CXXPASSFLAGS = -fpass-plugin=$(PASS_PATH)/$(PASS_FILE)
+CXXFLAGS += $(CXXPASSFLAGS)
 LDFLAGS = $(shell $(LLVM_CONFIG) --ldflags)
 
 # Instrumentation pass (overwrite if needed)
@@ -30,7 +31,7 @@ all-fast: $(EXEC_FAST)
 
 # Compile and instrument the source directly to an executable
 $(EXEC_FAST): $(SRC) build-pass
-	$(CLANG) $(CXXFLAGS) $(CXXPASSFLAGS) $(SRC) -o $(EXEC_FAST)
+	$(CLANG) $(CXXFLAGS) $(SRC) -o $(EXEC_FAST)
 
 build-pass:
 	make -C $(PASS_PATH)
